@@ -1,0 +1,5 @@
+{
+  "name": "FinCategorizer",
+  "description": "Automatize a extração e classificação de dados financeiros com IA",
+  "requestFramePermissions": []
+}
