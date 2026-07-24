@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, DragEvent, ChangeEvent, useEffect, useRef } from "react";
-import { UploadCloud, FileText, Loader2, Building, Calendar, CheckCircle, FileCheck, Store, CreditCard, Key, User, ArrowLeft, RefreshCw, ChevronDown, Download, AlertTriangle, Copy, Check, Clock, ShieldAlert, ScanLine, Trash2, Printer, Share2, Maximize2, X, Search, BarChart3, Command, RotateCw, Edit2, Save, XCircle, ZoomIn, ZoomOut, Undo, Info, SortDesc, SortAsc, Filter, ArrowUp, ArrowDown, Sparkles, Play } from "lucide-react";
+import { UploadCloud, FileText, Loader2, Building, Calendar, CheckCircle, FileCheck, Store, CreditCard, Key, User, ArrowLeft, RefreshCw, ChevronDown, Download, AlertTriangle, Copy, Check, Clock, ShieldAlert, ScanLine, Trash2, Printer, Share2, Maximize2, X, Search, BarChart3, Command, RotateCw, Edit2, Save, XCircle, ZoomIn, ZoomOut, Undo, Info, SortDesc, SortAsc, Filter, ArrowUp, ArrowDown, Sparkles, Play, Sliders, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 interface ToastProps {
@@ -41,6 +41,67 @@ interface BatchItem {
 }
 
 const HISTORY_KEY = "@ais/receipt-history";
+
+const INITIAL_MOCK_DATA: ReceiptData[] = [
+  {
+    id: "rec_demo_001",
+    cnpj: "00.360.305/0001-04",
+    date: "2026-07-22",
+    total_value: 349.90,
+    category: "Material de Escritório",
+    supplier_name: "Kalunga Comércio e Indústria S.A.",
+    payment_method: "Cartão de Crédito Corporate",
+    access_key: "3526 0700 3603 0500 0104 5500 1000 0123 4510 0987 6543",
+    consumer_id: "123.456.789-00",
+    confidence_score: 99,
+    extraction_notes: "Nota Fiscal de Consumidor Eletrônica (NFC-e) carregada em modo demonstrativo. Razão social e CNPJ validados.",
+    model_used: "gemini-3.5-flash",
+    grounding_sources: [
+      {
+        title: "Consulta Cadastral CNPJ - Kalunga S.A.",
+        uri: "https://solucoes.receita.fazenda.gov.br"
+      }
+    ]
+  },
+  {
+    id: "rec_demo_002",
+    cnpj: "14.200.166/0001-66",
+    date: "2026-07-20",
+    total_value: 1850.00,
+    category: "Serviços de TI / Nuvem",
+    supplier_name: "Google Cloud Brasil Serviços de Internet",
+    payment_method: "Boleto Bancário",
+    access_key: "3526 0714 2001 6600 0166 5500 2000 0543 2110 1234 5678",
+    confidence_score: 96,
+    extraction_notes: "Fatura de infraestrutura em nuvem e licenças de software processada via análise documental.",
+    model_used: "gemini-3.5-flash"
+  },
+  {
+    id: "rec_demo_003",
+    cnpj: "06.165.753/0001-92",
+    date: "2026-07-18",
+    total_value: 128.50,
+    category: "Alimentação & Viagens",
+    supplier_name: "Restaurante Sabor & Arte Ltda",
+    payment_method: "Pix",
+    confidence_score: 92,
+    extraction_notes: "Cupom fiscal com desgaste térmico leve recuperado com sucesso pelo motor OCR.",
+    model_used: "gemini-3.1-pro"
+  },
+  {
+    id: "rec_demo_004",
+    cnpj: "33.000.167/0001-01",
+    date: "2026-07-15",
+    total_value: 412.00,
+    category: "Combustível / Frota",
+    supplier_name: "Posto Petrobras Maracanã",
+    payment_method: "Cartão de Débito",
+    access_key: "3326 0733 0001 6700 0101 5500 1000 0987 6543 1234 5678",
+    confidence_score: 94,
+    extraction_notes: "Abastecimento de veículos da frota comercial. Categoria associada automaticamente.",
+    model_used: "gemini-3.5-flash"
+  }
+];
 
 const AccordionSection = ({ title, icon: Icon, children, defaultOpen = true }: { title: string, icon: any, children: React.ReactNode, defaultOpen?: boolean }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -138,13 +199,34 @@ export default function Dashboard() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(HISTORY_KEY);
-      if (saved) setHistory(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setHistory(parsed);
+        } else {
+          setHistory(INITIAL_MOCK_DATA);
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(INITIAL_MOCK_DATA));
+        }
+      } else {
+        setHistory(INITIAL_MOCK_DATA);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(INITIAL_MOCK_DATA));
+      }
       const savedDept = localStorage.getItem("@ais/dept");
       if (savedDept) setDepartment(savedDept);
     } catch (err) {
-      console.warn("Failed to load history", err);
+      console.warn("Falha ao carregar do localStorage. Inicializando com dados fictícios.", err);
+      setHistory(INITIAL_MOCK_DATA);
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(INITIAL_MOCK_DATA));
+      } catch (_) {}
     }
   }, []);
+
+  const restoreMockData = useCallback(() => {
+    setHistory(INITIAL_MOCK_DATA);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(INITIAL_MOCK_DATA));
+    addToast("Dados de exemplo restaurados com sucesso!", "success");
+  }, [addToast]);
 
   useEffect(() => {
     localStorage.setItem("@ais/dept", department);
@@ -160,6 +242,18 @@ export default function Dashboard() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen]);
 
+  const resetForm = useCallback(() => {
+    if (filePreview) URL.revokeObjectURL(filePreview);
+    setFile(null);
+    setFilePreview(null);
+    setExpectedValue("");
+    setDepartment("Administrativo");
+    setResult(null);
+    setError(null);
+    setBatchQueue([]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [filePreview]);
+
   const saveToHistory = useCallback((newResult: ReceiptData) => {
     setHistory(prev => {
       // Evitar duplicatas em caso de re-análises acidentais 
@@ -173,7 +267,7 @@ export default function Dashboard() {
   const loadFromHistory = useCallback((item: ReceiptData) => {
     resetForm();
     setResult(item);
-  }, []);
+  }, [resetForm]);
 
   const copyToClipboard = useCallback(async (text: string, field: string) => {
     try {
@@ -478,18 +572,6 @@ export default function Dashboard() {
     fileInputRef.current?.click();
   }, []);
 
-  const resetForm = useCallback(() => {
-    if (filePreview) URL.revokeObjectURL(filePreview);
-    setFile(null);
-    setFilePreview(null);
-    setExpectedValue("");
-    setDepartment("Administrativo");
-    setResult(null);
-    setError(null);
-    setBatchQueue([]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }, [filePreview]);
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) return;
@@ -544,7 +626,7 @@ export default function Dashboard() {
     } finally {
       setIsProcessing(false);
     }
-  }, [file, expectedValue, selectedModel, useGoogleSearch]);
+  }, [file, expectedValue, selectedModel, useGoogleSearch, saveToHistory]);
 
   const exportCSV = useCallback(() => {
     if (!result) return;
@@ -610,7 +692,7 @@ export default function Dashboard() {
   const variance = getVarianceInfo();
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-sans p-4 sm:p-8 lg:p-12 relative overflow-hidden print:bg-white print:text-black print:p-0 print:overflow-visible" aria-busy={isProcessing}>
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 font-sans p-4 sm:p-8 lg:p-12 relative overflow-hidden print:bg-white print:text-black print:p-0 print:overflow-visible" aria-busy={isProcessing}>
       
       <div className="max-w-5xl mx-auto space-y-10 relative z-10 w-full print:space-y-0">
         
@@ -632,32 +714,20 @@ export default function Dashboard() {
         </header>
 
         {/* Progress Tracker / Instruções Rápidas */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2 print:hidden relative">
-          <div className="hidden sm:block absolute top-[28px] left-[15%] right-[15%] h-[2px] bg-white/5 z-0" />
-          <div className="hidden sm:block absolute top-[28px] left-[15%] right-[15%] h-[2px] bg-emerald-500/50 z-0 origin-left transition-transform duration-500" style={{ transform: `scaleX(${result ? 1 : file ? 0.5 : 0})` }} />
-          
-          <div className={`relative z-10 backdrop-blur-sm border rounded-2xl p-5 flex flex-col gap-3 transition-colors ${!file ? 'bg-zinc-800/80 border-emerald-500/30' : 'bg-zinc-900/40 border-white/5 opacity-50'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border ${!file ? 'bg-emerald-500 text-zinc-950 border-emerald-500' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>{!file ? "1" : <Check className="w-4 h-4" />}</div>
-            <div>
-              <h3 className="font-semibold text-zinc-100">Envie o recibo</h3>
-              <p className="text-sm text-zinc-400 mt-1 leading-relaxed">Arraste ou cole (Ctrl+V) a imagem da sua nota fiscal.</p>
-            </div>
+        <div className="bg-zinc-900/20 backdrop-blur-sm border border-white/5 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-zinc-400 print:hidden shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className={`flex h-2 w-2 rounded-full ${!file ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-zinc-600'}`} />
+            <span>Etapa 1: <strong className="text-zinc-200">Envio do Recibo</strong></span>
           </div>
-          
-          <div className={`relative z-10 backdrop-blur-sm border rounded-2xl p-5 flex flex-col gap-3 transition-colors ${file && !result ? 'bg-zinc-800/80 border-emerald-500/30' : 'bg-zinc-900/40 border-white/5 opacity-50'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border ${file && !result ? 'bg-emerald-500 text-zinc-950 border-emerald-500' : result ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-white/5 text-zinc-500 border-white/10'}`}>{result ? <Check className="w-4 h-4" /> : "2"}</div>
-            <div>
-              <h3 className="font-semibold text-zinc-100">Confirme os Dados</h3>
-              <p className="text-sm text-zinc-400 mt-1 leading-relaxed">Selecione o centro de custo e digite o valor de verificação (Opcional).</p>
-            </div>
+          <div className="hidden md:block text-zinc-800 font-light">/</div>
+          <div className="flex items-center gap-3">
+            <span className={`flex h-2 w-2 rounded-full ${file && !result ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : result ? 'bg-emerald-500/50' : 'bg-zinc-800'}`} />
+            <span>Etapa 2: <strong className={file && !result ? 'text-zinc-200' : 'text-zinc-400'}>Configurações de Auditoria</strong></span>
           </div>
-          
-          <div className={`relative z-10 backdrop-blur-sm border rounded-2xl p-5 flex flex-col gap-3 transition-colors ${result ? 'bg-zinc-800/80 border-emerald-500/30' : 'bg-zinc-900/40 border-white/5 opacity-50'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border ${result ? 'bg-emerald-500 text-zinc-950 border-emerald-500' : 'bg-white/5 text-zinc-500 border-white/10'}`}>3</div>
-            <div>
-              <h3 className="font-semibold text-zinc-100">Analise e Exporte</h3>
-              <p className="text-sm text-zinc-400 mt-1 leading-relaxed">Extraia os dados com IA, valide e depois exporte para CSV.</p>
-            </div>
+          <div className="hidden md:block text-zinc-800 font-light">/</div>
+          <div className="flex items-center gap-3">
+            <span className={`flex h-2 w-2 rounded-full ${result ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-800'}`} />
+            <span>Etapa 3: <strong className={result ? 'text-zinc-200' : 'text-zinc-400'}>Revisão Contábil</strong></span>
           </div>
         </div>
 
@@ -676,15 +746,13 @@ export default function Dashboard() {
                 tabIndex={0}
                 aria-label="Área para upload de arquivos"
                 animate={isDragging ? { 
-                  scale: 1.02, 
-                  boxShadow: "0 0 25px rgba(52, 211, 153, 0.4)", 
-                  borderColor: "rgba(52, 211, 153, 0.8)",
-                  backgroundColor: "rgba(16, 185, 129, 0.1)"
+                  scale: 1.01, 
+                  borderColor: "rgba(16, 185, 129, 0.6)",
+                  backgroundColor: "rgba(16, 185, 129, 0.06)"
                 } : { 
                   scale: 1, 
-                  boxShadow: "0 0 0px rgba(52, 211, 153, 0)",
-                  borderColor: file ? "rgba(16, 185, 129, 0.4)" : "rgba(63, 63, 70, 1)",
-                  backgroundColor: file ? "rgba(16, 185, 129, 0.05)" : "rgba(24, 24, 27, 0.5)"
+                  borderColor: file ? "rgba(16, 185, 129, 0.2)" : "rgba(63, 63, 70, 0.4)",
+                  backgroundColor: file ? "rgba(16, 185, 129, 0.03)" : "rgba(24, 24, 27, 0.3)"
                 }}
                 transition={{ 
                   repeat: isDragging ? Infinity : 0, 
@@ -738,6 +806,7 @@ export default function Dashboard() {
                           onClick={() => setLightboxOpen(true)}
                           title="Clique para ampliar"
                         >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={filePreview} alt="Preview do documento" className="w-full h-full object-cover transition-transform group-hover:scale-105" style={{ transform: `rotate(${imageRotation}deg)` }} />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
@@ -878,26 +947,26 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Parâmetros da Inteligência Artificial */}
+              {/* Parâmetros de Extração */}
               <div className="border-t border-white/5 pt-5 space-y-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400">Parâmetros de Inteligência Artificial</h3>
+                  <Sliders className="w-4 h-4 text-zinc-400" />
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400">Preferências de Extração</h3>
                 </div>
 
                 {/* Modo de Execução */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-zinc-400">Modo de Operação</label>
-                  <div className="grid grid-cols-2 gap-2 bg-black/45 p-1 rounded-xl border border-white/5">
+                  <label className="block text-xs font-semibold text-zinc-400">Modo de Entrada</label>
+                  <div className="grid grid-cols-2 gap-2 bg-zinc-950/40 p-1 rounded-xl border border-white/5">
                     <button
                       type="button"
                       onClick={() => {
                         setIsBatchMode(false);
                         resetForm();
                       }}
-                      className={`py-2 text-xs font-bold rounded-lg transition-all ${!isBatchMode ? "bg-white text-zinc-950 shadow-md" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${!isBatchMode ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                     >
-                      Único Arquivo
+                      Documento Único
                     </button>
                     <button
                       type="button"
@@ -905,52 +974,52 @@ export default function Dashboard() {
                         setIsBatchMode(true);
                         resetForm();
                       }}
-                      className={`py-2 text-xs font-bold rounded-lg transition-all ${isBatchMode ? "bg-white text-zinc-950 shadow-md" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${isBatchMode ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                     >
-                      Lote (Multi-upload)
+                      Processamento em Lote
                     </button>
                   </div>
                 </div>
 
                 {/* Modelo da IA */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-zinc-400">Modelo Gemini</label>
-                  <div className="grid grid-cols-2 gap-2 bg-black/45 p-1 rounded-xl border border-white/5">
+                  <label className="block text-xs font-semibold text-zinc-400">Motor de Análise</label>
+                  <div className="grid grid-cols-2 gap-2 bg-zinc-950/40 p-1 rounded-xl border border-white/5">
                     <button
                       type="button"
                       onClick={() => setSelectedModel("gemini-3.5-flash")}
-                      className={`py-2.5 text-xs font-bold rounded-lg transition-all ${selectedModel === "gemini-3.5-flash" ? "bg-emerald-500 text-zinc-955 shadow-md" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2.5 text-xs font-semibold rounded-lg transition-all ${selectedModel === "gemini-3.5-flash" ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                     >
-                      Gemini 3.5 Flash
+                      Flash (Velocidade)
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedModel("gemini-3.1-pro")}
-                      className={`py-2.5 text-xs font-bold rounded-lg transition-all ${selectedModel === "gemini-3.1-pro" ? "bg-emerald-500 text-zinc-955 shadow-md" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2.5 text-xs font-semibold rounded-lg transition-all ${selectedModel === "gemini-3.1-pro" ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
                     >
-                      Gemini 3.1 Pro
+                      Pro (Alta Precisão)
                     </button>
                   </div>
                   <p className="text-[10px] text-zinc-500 leading-relaxed ml-1">
-                    {selectedModel === "gemini-3.5-flash" ? "⚡ Flash: Recomendado por sua velocidade ultra-responsiva e consistência." : "🧠 Pro: Alta precisão analítica de raciocínio lógico em notas complexas ou rasuradas."}
+                    {selectedModel === "gemini-3.5-flash" ? "Recomendado por sua velocidade de resposta instantânea e consistência estrutural." : "Alta precisão de raciocínio, indicado para notas com baixa legibilidade ou rasuras."}
                   </p>
                 </div>
 
                 {/* Google Search Grounding */}
-                <div className="flex items-center justify-between p-3.5 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.04] transition-colors">
+                <div className="flex items-center justify-between p-3.5 bg-zinc-900/10 border border-white/5 rounded-xl hover:bg-zinc-900/20 transition-colors">
                   <div className="space-y-1 pr-4">
                     <div className="flex items-center gap-1.5">
                       <Search className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="text-xs font-semibold text-zinc-200">Busca do Google (Grounding)</span>
+                      <span className="text-xs font-semibold text-zinc-200">Enriquecimento Cadastral Online</span>
                     </div>
-                    <p className="text-[10px] text-zinc-500 leading-normal">Permite que a IA realize buscas na web para autenticar CNPJ e consolidar a razão social do emitente.</p>
+                    <p className="text-[10px] text-zinc-500 leading-normal">Realiza consulta pública na Web para identificar e validar a Razão Social do CNPJ emitente.</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setUseGoogleSearch(!useGoogleSearch)}
-                    className={`w-10 h-6 shrink-0 rounded-full transition-colors relative focus:outline-none ${useGoogleSearch ? "bg-emerald-500" : "bg-zinc-800"}`}
+                    className={`w-10 h-6 shrink-0 rounded-full transition-colors relative focus:outline-none border border-white/5 ${useGoogleSearch ? "bg-emerald-500/20 text-emerald-400" : "bg-zinc-800"}`}
                   >
-                    <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${useGoogleSearch ? "translate-x-4" : ""}`} />
+                    <span className={`absolute top-0.5 left-0.5 w-4.5 h-4.5 rounded-full transition-transform ${useGoogleSearch ? "translate-x-4 bg-emerald-400" : "bg-zinc-400"}`} />
                   </button>
                 </div>
               </div>
@@ -1101,13 +1170,13 @@ export default function Dashboard() {
                 >
                   <div className="flex sm:items-center items-start justify-between mb-8 pb-5 border-b border-white/10 flex-col sm:flex-row gap-4">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent flex items-center gap-3">
-                        Dados Estruturados
+                      <h2 className="text-xl font-semibold bg-gradient-to-r from-emerald-300 via-zinc-100 to-zinc-400 bg-clip-text text-transparent flex items-center gap-3 tracking-tight">
+                        Resultado da Extração
                       </h2>
                       {result.confidence_score !== undefined && (
-                        <div className="flex items-center gap-1.5 bg-black/20 px-2 py-1 rounded-md border border-white/5">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Confiança IA:</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${result.confidence_score >= 90 ? "bg-emerald-500/20 text-emerald-400" : result.confidence_score >= 70 ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>
+                        <div className="flex items-center gap-1.5 bg-zinc-950/40 px-2 py-1 rounded-md border border-white/5">
+                          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Índice de Precisão:</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${result.confidence_score >= 90 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : result.confidence_score >= 70 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
                             {result.confidence_score}%
                           </span>
                         </div>
@@ -1225,12 +1294,12 @@ export default function Dashboard() {
 
                   <div className="flex-1 overflow-y-auto pr-2 -mr-2 space-y-4 custom-scrollbar">
                     
-                    {/* Avisos da IA */}
+                    {/* Observações do Processamento */}
                     {result.extraction_notes && (
-                      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
-                        <div className="text-sm text-yellow-200/90 leading-relaxed font-medium">
-                          <span className="block text-yellow-500 font-bold mb-0.5 text-xs uppercase tracking-widest">Observação da IA</span>
+                      <div className="bg-zinc-900/20 border border-white/5 rounded-xl p-4 flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-zinc-400 shrink-0 mt-0.5" />
+                        <div className="text-sm text-zinc-300 leading-relaxed font-medium">
+                          <span className="block text-zinc-500 font-bold mb-0.5 text-xs uppercase tracking-widest">Observações do Processamento</span>
                           {result.extraction_notes}
                         </div>
                       </div>
@@ -1399,21 +1468,23 @@ export default function Dashboard() {
                       </AccordionSection>
                     )}
 
-                    {/* Metadados da IA */}
+                    {/* Informações de Segurança */}
                     <div className="pt-2">
-                      <div className="bg-white/[0.01] border border-white/5 rounded-xl p-3.5 flex flex-col gap-2.5">
-                        <div className="flex items-center justify-between text-[11px] text-zinc-500 border-b border-white/5 pb-2">
-                          <span className="font-bold uppercase tracking-wider">Metadados de Auditoria</span>
-                          <span className="bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Google Cloud Secure</span>
+                      <div className="bg-zinc-900/20 border border-white/5 rounded-xl p-3.5 flex flex-col gap-2.5">
+                        <div className="flex items-center justify-between text-[10px] text-zinc-500 border-b border-white/5 pb-2">
+                          <span className="font-bold uppercase tracking-widest">Registro de Processamento</span>
+                          <span className="text-[9px] bg-zinc-800 border border-white/5 text-zinc-400 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Canal Seguro HTTPS
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                           <div>
-                            <span className="text-zinc-500 block text-[10px] font-bold uppercase">Motor de Inferência</span>
-                            <span className="font-semibold text-zinc-300 font-mono">{result.model_used || "gemini-3.5-flash"}</span>
+                            <span className="text-zinc-500 block text-[10px] font-semibold uppercase tracking-wider">Motor Executado</span>
+                            <span className="font-semibold text-zinc-300 font-mono text-[11px]">{result.model_used === 'gemini-3.1-pro' ? 'Pro Engine' : 'Flash Engine'}</span>
                           </div>
                           <div>
-                            <span className="text-zinc-500 block text-[10px] font-bold uppercase">Processamento</span>
-                            <span className="font-semibold text-zinc-300">Servidor Protegido</span>
+                            <span className="text-zinc-500 block text-[10px] font-semibold uppercase tracking-wider">Servidor</span>
+                            <span className="font-semibold text-zinc-300 text-[11px]">América Latina (São Paulo)</span>
                           </div>
                         </div>
                       </div>
@@ -1431,9 +1502,9 @@ export default function Dashboard() {
                   <div className="w-20 h-20 bg-white/[0.02] rounded-3xl flex items-center justify-center border border-white/5 mb-6 relative">
                     <FileText className="w-8 h-8 text-zinc-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-zinc-300 tracking-tight">Nenhum dado extraído</h3>
+                  <h3 className="text-xl font-semibold text-zinc-300 tracking-tight">Pronto para Análise</h3>
                   <p className="text-zinc-500 text-sm mt-3 font-medium max-w-[260px] leading-relaxed">
-                    Envie o arquivo no painel ao lado e aguarde a Inteligência Artificial estruturar os dados.
+                    Envie o arquivo no painel ao lado para iniciar a extração e estruturação automática de dados.
                   </p>
                 </motion.div>
               )}
@@ -1443,7 +1514,7 @@ export default function Dashboard() {
         </div>
 
         {/* Histórico Recente Inferior */}
-        {history.length > 0 && (
+        {history.length > 0 ? (
           <div className="mt-12 border-t border-white/10 pt-8 pb-12 w-full animate-in fade-in slide-in-from-bottom-8 duration-500 print:hidden relative">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 relative">
               <AnimatePresence>
@@ -1476,7 +1547,7 @@ export default function Dashboard() {
               <div className="flex flex-wrap items-center gap-3">
                 <Clock className="w-5 h-5 text-emerald-400 hidden sm:block" />
                 <h2 className="text-xl font-bold text-zinc-100">
-                  Histórico
+                  Histórico (localStorage)
                 </h2>
                 <span className="bg-white/10 text-zinc-300 text-xs py-0.5 px-2 rounded-full font-bold">
                   {history.length} {history.length === 1 ? 'item' : 'itens'}
@@ -1486,7 +1557,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                <div className="relative flex-1 sm:flex-none sm:min-w-[200px]">
+                <div className="relative flex-1 sm:flex-none sm:min-w-[180px]">
                   <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input 
                     type="text" 
@@ -1512,9 +1583,17 @@ export default function Dashboard() {
                   <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
                 <button 
+                  onClick={restoreMockData}
+                  className="px-3 py-2 text-sm font-medium bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                  title="Restaurar Dados Demonstrativos"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span className="hidden sm:inline text-xs font-semibold">Restaurar Mocks</span>
+                </button>
+                <button 
                   onClick={exportHistoryCSV}
                   className="px-3 py-2 text-sm font-medium bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  title="Exportar Histórico"
+                  title="Exportar Histórico CSV"
                 >
                   <Download className="w-4 h-4" />
                   <span className="hidden sm:inline">Exportar</span>
@@ -1595,10 +1674,27 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+        ) : (
+          <div className="mt-12 border-t border-white/10 pt-8 pb-12 w-full print:hidden">
+            <div className="bg-zinc-900/30 border border-white/5 rounded-2xl p-8 text-center flex flex-col items-center justify-center">
+              <Clock className="w-8 h-8 text-zinc-600 mb-3" />
+              <h3 className="text-lg font-semibold text-zinc-300">Histórico no localStorage Vazio</h3>
+              <p className="text-xs text-zinc-500 max-w-sm mt-1 mb-4">
+                O seu histórico de notas fiscais está limpo. Você pode analisar novos documentos acima ou restaurar os dados de exemplo para demonstrar a aplicação.
+              </p>
+              <button
+                onClick={restoreMockData}
+                className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 rounded-xl text-xs font-semibold transition-all flex items-center gap-2"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Restaurar Dados de Exemplo (Mock Data)
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
-      {lightboxOpen && filePreview && (
+              {lightboxOpen && filePreview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 transition-all">
           <div 
             className="absolute inset-0 cursor-zoom-out"
@@ -1613,6 +1709,7 @@ export default function Dashboard() {
                 setLightboxZoom(z => Math.max(z - 0.2, 0.5));
               }}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={filePreview} 
                 alt="Preview amplo" 

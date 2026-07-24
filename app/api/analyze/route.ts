@@ -207,12 +207,10 @@ export async function POST(request: Request) {
     };
 
     const missingPortuguese = [];
-    if (!aiData.supplier_cnpj) missingPortuguese.push("CNPJ não detectado");
     if (aiData.total_value === undefined || aiData.total_value === null) missingPortuguese.push("Valor total ilegível ou ausente");
-    if (!aiData.issue_date) missingPortuguese.push("Data de emissão não encontrada");
 
     if (missingPortuguese.length > 0) {
-      console.warn(JSON.stringify({ type: "EXTRACTION_WARNING", message: "IA com dificuldade para extrair dados", ...logData }));
+      console.warn(JSON.stringify({ type: "EXTRACTION_WARNING", message: "IA com dificuldade para extrair dados essenciais", ...logData }));
       return NextResponse.json(
         { error: `Extração incompleta. Detalhes: ${missingPortuguese.join('; ')}. Por favor, verifique a legibilidade do arquivo e tente enviar novamente.` },
         { status: 422 }

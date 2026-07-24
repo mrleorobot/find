@@ -44,14 +44,10 @@ export default function LandingPage() {
       <main className="max-w-5xl mx-auto px-6 pt-32 pb-20 flex flex-col gap-32 relative">
         <section className="flex flex-col items-center text-center relative z-10">
           <div 
-            className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-700/50 text-xs font-medium text-zinc-300 mb-8 cursor-default hover:border-emerald-500/50 hover:bg-zinc-800/80 transition-all duration-300 shadow-xl"
+            className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-950/40 border border-white/5 text-xs font-medium text-zinc-400 mb-8 cursor-default hover:border-emerald-500/20 transition-all duration-300 shadow-sm"
           >
-             <Sparkles className="w-3.5 h-3.5 text-emerald-400 group-hover:animate-pulse" />
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            Pronto para testes e homologação
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500/80"></span>
+            <span>Pronto para Testes e Homologação</span>
           </div>
           
           <h1 
@@ -123,7 +119,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-3 tracking-tight group-hover:text-white transition-colors">Fluxo Simplificado</h3>
               <p className="text-sm text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors">
-                Acesse o painel, arraste sua nota fiscal (JPG ou PDF) e valide os dados em instantes com a ajuda de modelos de inteligência artificial generativa.
+                Acesse o painel, arraste sua nota fiscal e valide os dados consolidados em instantes através do nosso motor avançado de extração e estruturação automática.
               </p>
             </div>
 
@@ -138,16 +134,16 @@ export default function LandingPage() {
               </p>
               <ul className="grid grid-cols-2 gap-4 text-sm text-zinc-400">
                 <li className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-all hover:translate-x-1 cursor-default">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> Next.js 15 & React 19
+                  <span className="w-2 h-2 rounded-full bg-emerald-500/60 shadow-[0_0_6px_rgba(16,185,129,0.3)]"></span> Next.js 15 & React 19
                 </li>
                 <li className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-all hover:translate-x-1 cursor-default">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> Tailwind CSS v4
+                  <span className="w-2 h-2 rounded-full bg-emerald-500/60 shadow-[0_0_6px_rgba(16,185,129,0.3)]"></span> Tailwind CSS v4
                 </li>
                 <li className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-all hover:translate-x-1 cursor-default">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> Gemini 1.5 Flash AI
+                  <span className="w-2 h-2 rounded-full bg-emerald-500/60 shadow-[0_0_6px_rgba(16,185,129,0.3)]"></span> Motor Gemini (Flash & Pro)
                 </li>
                 <li className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-all hover:translate-x-1 cursor-default">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> Motion/React
+                  <span className="w-2 h-2 rounded-full bg-emerald-500/60 shadow-[0_0_6px_rgba(16,185,129,0.3)]"></span> Motion/React
                 </li>
               </ul>
             </div>
@@ -173,8 +169,7 @@ export default function LandingPage() {
         <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent"></div>
         <div className="pt-8 pb-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-zinc-500">
           <p className="flex items-center gap-2">
-            <Sparkles className="w-3 h-3 text-emerald-500/50" />
-            &copy; {new Date().getFullYear()} FinCategorizer. All rights reserved.
+            &copy; {new Date().getFullYear()} FinCategorizer. Todos os direitos reservados.
           </p>
           <p className="hover:text-zinc-300 transition-colors cursor-pointer text-zinc-400">
             Crafted for Brazilian Financial Norms
