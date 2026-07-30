@@ -1,5 +1,6 @@
 {
-  "name": "FinCategorizer",
-  "description": "Automatize a extração e classificação de dados financeiros com IA",
-  "requestFramePermissions": []
+  "name": "LedgerIQ",
+  "description": "Automated financial audit, receipt extraction, and expense categorization with AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

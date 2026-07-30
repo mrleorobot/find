@@ -3,6 +3,18 @@
 import React, { useState, useCallback, DragEvent, ChangeEvent, useEffect, useRef } from "react";
 import { UploadCloud, FileText, Loader2, Building, Calendar, CheckCircle, FileCheck, Store, CreditCard, Key, User, ArrowLeft, RefreshCw, ChevronDown, Download, AlertTriangle, Copy, Check, Clock, ShieldAlert, ScanLine, Trash2, Printer, Share2, Maximize2, X, Search, BarChart3, Command, RotateCw, Edit2, Save, XCircle, ZoomIn, ZoomOut, Undo, Info, SortDesc, SortAsc, Filter, ArrowUp, ArrowDown, Sparkles, Play, Sliders, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { 
+  AquaOrbLogo, 
+  AquaDocumentIcon, 
+  AquaUploadIcon, 
+  AquaScanLensIcon, 
+  AquaShieldIcon, 
+  AquaArrowRightIcon,
+  AquaCheckIcon,
+  AquaSearchIcon,
+  AquaGearIcon,
+  AquaWindowBar
+} from "@/components/GlassAquaIcons";
 
 interface ToastProps {
   id: string;
@@ -692,53 +704,63 @@ export default function Dashboard() {
   const variance = getVarianceInfo();
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 font-sans p-4 sm:p-8 lg:p-12 relative overflow-hidden print:bg-white print:text-black print:p-0 print:overflow-visible" aria-busy={isProcessing}>
-      
-      <div className="max-w-5xl mx-auto space-y-10 relative z-10 w-full print:space-y-0">
+    <div className="min-h-screen bg-[#090d16] text-slate-100 font-sans p-4 sm:p-8 lg:p-12 relative overflow-hidden print:bg-white print:text-black print:p-0 print:overflow-visible" aria-busy={isProcessing}>
+      {/* Y2K Frutiger Aero Liquid Glass Background Meshes */}
+      <div className="fixed inset-0 -z-10 h-full w-full bg-[#090d16] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.22),rgba(255,255,255,0))]"></div>
+      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/15 blur-[120px] -z-10 pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/15 blur-[120px] -z-10 pointer-events-none"></div>
+
+      <div className="max-w-6xl mx-auto space-y-8 relative z-10 w-full print:space-y-0">
         
         {/* Header */}
-        <header className="flex items-center gap-5 print:hidden">
-          <Link 
-            href="/" 
-            className="p-3 border border-white/10 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95"
-            aria-label="Voltar para a página inicial"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-br from-white to-zinc-400 bg-clip-text text-transparent">
-              Análise de Documentos
-            </h1>
-            <p className="text-sm sm:text-base text-zinc-400 mt-1.5 font-medium">Extração de notas fiscais usando IA de forma automática e precisa.</p>
+        <header className="flex items-center justify-between gap-5 print:hidden">
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/" 
+              className="p-3 glass-aqua-button-secondary rounded-full text-blue-200 hover:text-white transition-all shadow-md active:scale-95 flex items-center justify-center"
+              aria-label="Voltar para a página inicial"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  Auditoria & Extração de Documentos
+                </h1>
+                <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/40 text-cyan-200 hidden sm:inline-block shadow-inner">NFC-e / NF-e</span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 font-medium">Processamento fiscal estruturado com conferência de regras contábeis.</p>
+            </div>
           </div>
         </header>
 
-        {/* Progress Tracker / Instruções Rápidas */}
-        <div className="bg-zinc-900/20 backdrop-blur-sm border border-white/5 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-zinc-400 print:hidden shadow-sm">
-          <div className="flex items-center gap-3">
-            <span className={`flex h-2 w-2 rounded-full ${!file ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-zinc-600'}`} />
-            <span>Etapa 1: <strong className="text-zinc-200">Envio do Recibo</strong></span>
+        {/* Progress Stage Pipeline Tracker */}
+        <div className="glass-aqua-pill rounded-full px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-300 print:hidden shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <span className={`flex h-2.5 w-2.5 rounded-full ${!file ? 'bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]' : 'bg-slate-600'}`} />
+            <span>Etapa 1: <strong className="text-white font-bold">Envio do Documento</strong></span>
           </div>
-          <div className="hidden md:block text-zinc-800 font-light">/</div>
-          <div className="flex items-center gap-3">
-            <span className={`flex h-2 w-2 rounded-full ${file && !result ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : result ? 'bg-emerald-500/50' : 'bg-zinc-800'}`} />
-            <span>Etapa 2: <strong className={file && !result ? 'text-zinc-200' : 'text-zinc-400'}>Configurações de Auditoria</strong></span>
+          <div className="hidden md:block text-slate-600 font-light">/</div>
+          <div className="flex items-center gap-2.5">
+            <span className={`flex h-2.5 w-2.5 rounded-full ${file && !result ? 'bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]' : result ? 'bg-blue-400/60' : 'bg-slate-700'}`} />
+            <span>Etapa 2: <strong className={file && !result ? 'text-white font-bold' : 'text-slate-400 font-normal'}>Parâmetros Contábeis</strong></span>
           </div>
-          <div className="hidden md:block text-zinc-800 font-light">/</div>
-          <div className="flex items-center gap-3">
-            <span className={`flex h-2 w-2 rounded-full ${result ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-800'}`} />
-            <span>Etapa 3: <strong className={result ? 'text-zinc-200' : 'text-zinc-400'}>Revisão Contábil</strong></span>
+          <div className="hidden md:block text-slate-600 font-light">/</div>
+          <div className="flex items-center gap-2.5">
+            <span className={`flex h-2.5 w-2.5 rounded-full ${result ? 'bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]' : 'bg-slate-700'}`} />
+            <span>Etapa 3: <strong className={result ? 'text-white font-bold' : 'text-slate-400 font-normal'}>Validação Estruturada</strong></span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr] gap-8">
           
           {/* Form Column */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 p-6 sm:p-8 rounded-3xl flex flex-col gap-6 shadow-2xl relative print:hidden"
+            className="glass-aqua-card p-6 sm:p-8 rounded-3xl flex flex-col gap-6 shadow-2xl relative print:hidden"
           >
+            <AquaWindowBar title="Upload & Parâmetros Contábeis" icon={<AquaDocumentIcon className="w-4 h-4" />} />
             <form onSubmit={handleSubmit} className="flex flex-col gap-8 flex-1">
               {/* Dropzone */}
               <motion.div
@@ -747,21 +769,19 @@ export default function Dashboard() {
                 aria-label="Área para upload de arquivos"
                 animate={isDragging ? { 
                   scale: 1.01, 
-                  borderColor: "rgba(16, 185, 129, 0.6)",
-                  backgroundColor: "rgba(16, 185, 129, 0.06)"
+                  borderColor: "rgba(255, 255, 255, 0.4)",
+                  backgroundColor: "rgba(255, 255, 255, 0.04)"
                 } : { 
                   scale: 1, 
-                  borderColor: file ? "rgba(16, 185, 129, 0.2)" : "rgba(63, 63, 70, 0.4)",
-                  backgroundColor: file ? "rgba(16, 185, 129, 0.03)" : "rgba(24, 24, 27, 0.3)"
+                  borderColor: file ? "rgba(255, 255, 255, 0.2)" : "rgba(63, 63, 70, 0.6)",
+                  backgroundColor: file ? "rgba(255, 255, 255, 0.02)" : "rgba(18, 18, 22, 0.5)"
                 }}
                 transition={{ 
-                  repeat: isDragging ? Infinity : 0, 
-                  repeatType: "reverse", 
-                  duration: 0.8,
+                  duration: 0.2,
                   ease: "easeInOut"
                 }}
                 className={`relative flex flex-col items-center justify-center border-2 rounded-2xl p-6 sm:p-8 overflow-hidden ${
-                  !isDragging && !file ? "border-dashed hover:border-zinc-500 hover:bg-zinc-800/80 cursor-pointer transition-colors" : "cursor-pointer"
+                  !isDragging && !file ? "border-dashed hover:border-zinc-600 hover:bg-zinc-900/60 cursor-pointer transition-all" : "cursor-pointer"
                 }`}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -774,20 +794,20 @@ export default function Dashboard() {
                   {isBatchMode ? (
                     <motion.div 
                       key="batch-upload"
-                      initial={{ scale: 0.9, opacity: 0 }}
+                      initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
+                      exit={{ scale: 0.95, opacity: 0 }}
                       className="flex flex-col items-center gap-3 text-zinc-400 pointer-events-none relative z-10 text-center"
                     >
-                      <div className="p-3.5 rounded-full bg-emerald-500/10 text-emerald-400">
-                        <UploadCloud className="w-6 h-6" strokeWidth={1.5} />
+                      <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200">
+                        <UploadCloud className="w-6 h-6" strokeWidth={1.75} />
                       </div>
                       <div>
                         <span className="font-semibold text-zinc-200 block text-sm">Adicionar Arquivos em Lote</span>
-                        <span className="text-[11px] text-zinc-500">Arraste múltiplos recibos ou clique para selecionar</span>
+                        <span className="text-[11px] text-zinc-500 font-mono">Arraste múltiplos recibos ou clique para selecionar</span>
                       </div>
                       {batchQueue.length > 0 && (
-                        <div className="text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full font-bold">
+                        <div className="text-xs bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full font-mono">
                           {batchQueue.length} {batchQueue.length === 1 ? 'arquivo adicionado' : 'arquivos adicionados'}
                         </div>
                       )}
@@ -795,22 +815,22 @@ export default function Dashboard() {
                   ) : file ? (
                     <motion.div 
                       key="file"
-                      initial={{ scale: 0.9, opacity: 0 }}
+                      initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
+                      exit={{ scale: 0.95, opacity: 0 }}
                       className="flex flex-col items-center justify-center gap-4 text-zinc-200 w-full relative z-10"
                     >
                       {filePreview ? (
                         <div 
-                          className="relative w-full max-w-[180px] aspect-[1/1.4] rounded-xl overflow-hidden border border-white/20 shadow-xl group cursor-pointer"
+                          className="relative w-full max-w-[180px] aspect-[1/1.4] rounded-xl overflow-hidden border border-zinc-700/80 shadow-2xl group cursor-pointer"
                           onClick={() => setLightboxOpen(true)}
                           title="Clique para ampliar"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={filePreview} alt="Preview do documento" className="w-full h-full object-cover transition-transform group-hover:scale-105" style={{ transform: `rotate(${imageRotation}deg)` }} />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                            <span className="flex items-center justify-center text-white p-2 hover:bg-white/20 rounded-full transition-colors"><Maximize2 className="w-6 h-6 drop-shadow-md" /></span>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                            <span className="flex items-center justify-center text-white p-2 hover:bg-white/20 rounded-full transition-colors"><Maximize2 className="w-5 h-5 drop-shadow-md" /></span>
                           </div>
                           
                           <button 
@@ -819,43 +839,35 @@ export default function Dashboard() {
                               e.stopPropagation();
                               setImageRotation(r => r + 90);
                             }}
-                            className="absolute bottom-3 right-3 p-1.5 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all z-30 shadow-lg"
+                            className="absolute bottom-3 right-3 p-1.5 bg-zinc-950/80 hover:bg-black text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-30 shadow-lg border border-zinc-800"
                             title="Rotacionar imagem"
                           >
-                            <RotateCw className="w-4 h-4" />
+                            <RotateCw className="w-3.5 h-3.5" />
                           </button>
-                          
-                          {isProcessing && (
-                            <motion.div 
-                              className="absolute top-0 left-0 w-full h-[2px] bg-emerald-400 shadow-[0_0_15px_3px_rgba(52,211,153,0.8)] z-20 pointer-events-none"
-                              animate={{ top: ["0%", "100%", "0%"] }}
-                              transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                            />
-                          )}
 
                           <motion.div 
                             initial={{ scale: 0, opacity: 0 }} 
                             animate={{ scale: 1, opacity: 1 }} 
                             transition={{ type: "spring", bounce: 0.6, delay: 0.2 }}
-                            className="absolute top-3 right-3 bg-emerald-500 rounded-full p-1.5 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10"
+                            className="absolute top-3 right-3 bg-emerald-500 rounded-full p-1 shadow-md z-10"
                           >
-                            <CheckCircle className="w-5 h-5 text-zinc-950" strokeWidth={3} />
+                            <CheckCircle className="w-4 h-4 text-zinc-950" strokeWidth={3} />
                           </motion.div>
                         </div>
                       ) : (
-                         <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                         <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
                            <motion.div
                              initial={{ scale: 0, opacity: 0 }}
                              animate={{ scale: 1, opacity: 1 }}
                              transition={{ type: "spring", bounce: 0.5, delay: 0.1 }}
                            >
-                             <CheckCircle className="w-10 h-10 text-emerald-400" />
+                             <CheckCircle className="w-8 h-8 text-emerald-400" />
                            </motion.div>
                          </div>
                       )}
                       <div className="flex flex-col items-center gap-1 mx-4">
-                        <span className="font-semibold text-center break-all line-clamp-2 text-sm max-w-[250px]">{file.name}</span>
-                        <span className="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">
+                        <span className="font-semibold text-center break-all line-clamp-2 text-sm max-w-[250px] text-zinc-200">{file.name}</span>
+                        <span className="text-[11px] font-mono font-medium text-zinc-400 bg-zinc-900 px-2.5 py-0.5 rounded-md border border-zinc-800">
                           {(file.size / (1024 * 1024)).toFixed(2)} MB
                         </span>
                       </div>
@@ -863,17 +875,17 @@ export default function Dashboard() {
                   ) : (
                     <motion.div 
                       key="empty"
-                      initial={{ scale: 0.9, opacity: 0 }}
+                      initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
-                      className="flex flex-col items-center gap-4 text-zinc-400 pointer-events-none relative z-10"
+                      exit={{ scale: 0.95, opacity: 0 }}
+                      className="flex flex-col items-center gap-3.5 text-zinc-400 pointer-events-none relative z-10"
                     >
-                      <div className={`p-4 rounded-full transition-colors ${isDragging ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5"}`}>
-                        <UploadCloud className="w-8 h-8" strokeWidth={1.5} />
+                      <div className={`p-3.5 rounded-xl border transition-colors ${isDragging ? "bg-zinc-800 border-zinc-600 text-white" : "bg-zinc-900 border-zinc-800 text-zinc-300"}`}>
+                        <UploadCloud className="w-7 h-7" strokeWidth={1.5} />
                       </div>
                       <div className="text-center">
-                        <span className="font-semibold text-zinc-200 block mb-1">Clique, arraste ou cole (Ctrl+V)</span>
-                        <span className="text-xs text-zinc-500">Imagens (JPG, PNG, WEBP, TIFF) ou PDF até 5MB</span>
+                        <span className="font-semibold text-zinc-200 block mb-1 text-sm">Clique, arraste ou cole (Ctrl+V)</span>
+                        <span className="text-xs text-zinc-500 font-mono">Arquivos válidos: Imagens (JPG, PNG, WEBP) ou PDF até 5MB</span>
                       </div>
                     </motion.div>
                   )}
@@ -883,7 +895,7 @@ export default function Dashboard() {
                   ref={fileInputRef}
                   type="file"
                   multiple={isBatchMode}
-                  className="sr-only" /* sr-only for better accessibility handling than hidden in some cases */
+                  className="sr-only"
                   accept="image/jpeg, image/png, application/pdf"
                   onChange={handleFileInput}
                   tabIndex={-1}
@@ -893,37 +905,37 @@ export default function Dashboard() {
 
               {/* Optional Values and Department */}
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="department-select" className="block text-sm font-semibold text-zinc-300">
-                    Centro de Custo
+                <div className="space-y-1.5">
+                  <label htmlFor="department-select" className="block text-xs font-mono uppercase tracking-wider text-cyan-200/80 font-bold">
+                    Centro de Custo (Departamento)
                   </label>
                   <div className="relative">
                     <select
                       id="department-select"
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl py-3.5 px-4 pr-10 text-zinc-100 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium appearance-none hover:border-white/20"
+                      className="w-full glass-aqua-input rounded-2xl py-3 px-4 pr-10 text-white text-sm focus:outline-none focus:border-blue-400 transition-all font-medium appearance-none hover:border-white/30"
                     >
-                      <option value="Administrativo">Administrativo</option>
-                      <option value="Financeiro">Financeiro</option>
-                      <option value="Operações">Operações</option>
-                      <option value="Vendas">Vendas</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="TI">Tecnologia (TI)</option>
+                      <option value="Administrativo" className="bg-slate-900 text-white">Administrativo</option>
+                      <option value="Financeiro" className="bg-slate-900 text-white">Financeiro</option>
+                      <option value="Operações" className="bg-slate-900 text-white">Operações</option>
+                      <option value="Vendas" className="bg-slate-900 text-white">Vendas</option>
+                      <option value="Marketing" className="bg-slate-900 text-white">Marketing</option>
+                      <option value="TI" className="bg-slate-900 text-white">Tecnologia (TI)</option>
                     </select>
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                      <ChevronDown className="w-5 h-5 text-zinc-500" />
+                      <ChevronDown className="w-4 h-4 text-cyan-300" />
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor={rawExpectedValueId} className="block text-sm font-semibold text-zinc-300">
-                    Verificação de Valor Total <span className="text-zinc-500 font-normal ml-1">(Opcional)</span>
+                <div className="space-y-1.5">
+                  <label htmlFor={rawExpectedValueId} className="block text-xs font-mono uppercase tracking-wider text-cyan-200/80 font-bold">
+                    Verificação de Valor Total <span className="text-slate-400 font-normal ml-1">(Opcional)</span>
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <span className="text-zinc-400 font-medium group-focus-within:text-emerald-400 transition-colors">R$</span>
+                      <span className="text-cyan-300 font-mono text-xs font-bold">R$</span>
                     </div>
                     <input
                       id={rawExpectedValueId}
@@ -936,35 +948,32 @@ export default function Dashboard() {
                         const val = e.target.value.replace(/[^0-9.,]/g, '');
                         setExpectedValue(val);
                       }}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-zinc-100 text-base sm:text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium hover:border-white/20"
+                      className="w-full glass-aqua-input rounded-2xl py-3 pl-11 pr-4 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-blue-400 transition-all font-mono hover:border-white/30"
                       aria-describedby={`${expectedValueHelpId} ${error ? 'form-error' : ''}`}
                       aria-invalid={error ? true : false}
                     />
                   </div>
-                  <p id={expectedValueHelpId} className="text-xs text-zinc-500 font-medium ml-1">
-                    Insira o valor esperado para realizar auditoria automática.
-                  </p>
                 </div>
               </div>
 
               {/* Parâmetros de Extração */}
-              <div className="border-t border-white/5 pt-5 space-y-4">
+              <div className="border-t border-white/10 pt-5 space-y-4">
                 <div className="flex items-center gap-2 mb-1">
-                  <Sliders className="w-4 h-4 text-zinc-400" />
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400">Preferências de Extração</h3>
+                  <AquaGearIcon className="w-4 h-4 text-cyan-300" />
+                  <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-cyan-200">Preferências de Extração</h3>
                 </div>
 
                 {/* Modo de Execução */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-zinc-400">Modo de Entrada</label>
-                  <div className="grid grid-cols-2 gap-2 bg-zinc-950/40 p-1 rounded-xl border border-white/5">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-slate-300">Modo de Entrada</label>
+                  <div className="grid grid-cols-2 gap-2 glass-aqua-input p-1.5 rounded-2xl">
                     <button
                       type="button"
                       onClick={() => {
                         setIsBatchMode(false);
                         resetForm();
                       }}
-                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${!isBatchMode ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-bold rounded-xl transition-all ${!isBatchMode ? "glass-aqua-button-primary text-white shadow-md" : "text-slate-300 hover:text-white"}`}
                     >
                       Documento Único
                     </button>
@@ -974,7 +983,7 @@ export default function Dashboard() {
                         setIsBatchMode(true);
                         resetForm();
                       }}
-                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${isBatchMode ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-bold rounded-xl transition-all ${isBatchMode ? "glass-aqua-button-primary text-white shadow-md" : "text-slate-300 hover:text-white"}`}
                     >
                       Processamento em Lote
                     </button>
@@ -982,44 +991,41 @@ export default function Dashboard() {
                 </div>
 
                 {/* Modelo da IA */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-zinc-400">Motor de Análise</label>
-                  <div className="grid grid-cols-2 gap-2 bg-zinc-950/40 p-1 rounded-xl border border-white/5">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-slate-300">Motor de Análise (Gemini)</label>
+                  <div className="grid grid-cols-2 gap-2 glass-aqua-input p-1.5 rounded-2xl">
                     <button
                       type="button"
                       onClick={() => setSelectedModel("gemini-3.5-flash")}
-                      className={`py-2.5 text-xs font-semibold rounded-lg transition-all ${selectedModel === "gemini-3.5-flash" ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-bold rounded-xl transition-all ${selectedModel === "gemini-3.5-flash" ? "glass-aqua-button-primary text-white shadow-md" : "text-slate-300 hover:text-white"}`}
                     >
-                      Flash (Velocidade)
+                      Flash (Ultra Rápido)
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedModel("gemini-3.1-pro")}
-                      className={`py-2.5 text-xs font-semibold rounded-lg transition-all ${selectedModel === "gemini-3.1-pro" ? "bg-zinc-800 text-white border border-zinc-700/50 shadow-sm" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+                      className={`py-2 text-xs font-bold rounded-xl transition-all ${selectedModel === "gemini-3.1-pro" ? "glass-aqua-button-primary text-white shadow-md" : "text-slate-300 hover:text-white"}`}
                     >
                       Pro (Alta Precisão)
                     </button>
                   </div>
-                  <p className="text-[10px] text-zinc-500 leading-relaxed ml-1">
-                    {selectedModel === "gemini-3.5-flash" ? "Recomendado por sua velocidade de resposta instantânea e consistência estrutural." : "Alta precisão de raciocínio, indicado para notas com baixa legibilidade ou rasuras."}
-                  </p>
                 </div>
 
                 {/* Google Search Grounding */}
-                <div className="flex items-center justify-between p-3.5 bg-zinc-900/10 border border-white/5 rounded-xl hover:bg-zinc-900/20 transition-colors">
-                  <div className="space-y-1 pr-4">
+                <div className="flex items-center justify-between p-3.5 glass-aqua-input rounded-2xl">
+                  <div className="space-y-0.5 pr-4">
                     <div className="flex items-center gap-1.5">
-                      <Search className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="text-xs font-semibold text-zinc-200">Enriquecimento Cadastral Online</span>
+                      <AquaSearchIcon className="w-3.5 h-3.5 text-cyan-300" />
+                      <span className="text-xs font-bold text-white">Enriquecimento Cadastral Web</span>
                     </div>
-                    <p className="text-[10px] text-zinc-500 leading-normal">Realiza consulta pública na Web para identificar e validar a Razão Social do CNPJ emitente.</p>
+                    <p className="text-[10px] text-slate-300 font-normal">Valida Razão Social do CNPJ com dados oficiais online.</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setUseGoogleSearch(!useGoogleSearch)}
-                    className={`w-10 h-6 shrink-0 rounded-full transition-colors relative focus:outline-none border border-white/5 ${useGoogleSearch ? "bg-emerald-500/20 text-emerald-400" : "bg-zinc-800"}`}
+                    className={`w-10 h-6 shrink-0 rounded-full transition-colors relative focus:outline-none border border-white/20 ${useGoogleSearch ? "bg-cyan-500/40 shadow-[0_0_10px_rgba(34,211,238,0.5)]" : "bg-slate-800"}`}
                   >
-                    <span className={`absolute top-0.5 left-0.5 w-4.5 h-4.5 rounded-full transition-transform ${useGoogleSearch ? "translate-x-4 bg-emerald-400" : "bg-zinc-400"}`} />
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform ${useGoogleSearch ? "translate-x-4 bg-cyan-300 shadow-md" : "bg-slate-400"}`} />
                   </button>
                 </div>
               </div>
@@ -1115,21 +1121,21 @@ export default function Dashboard() {
                     type="submit"
                     disabled={!file || isProcessing}
                     aria-disabled={!file || isProcessing}
-                    className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2.5 transition-all outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white/50 ${
+                    className={`w-full py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2.5 transition-all outline-none ${
                       !file || isProcessing
-                        ? "bg-white/5 text-zinc-500 cursor-not-allowed border-transparent"
-                        : "bg-white text-black hover:bg-zinc-200 active:scale-[0.98] cursor-pointer"
+                        ? "bg-slate-900/60 text-slate-500 cursor-not-allowed border border-white/5"
+                        : "glass-aqua-button-primary text-white hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-xl shadow-blue-900/40"
                     }`}
                   >
                     {isProcessing ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin text-zinc-400" />
-                        <span className="text-zinc-400">Processando com Gemini...</span>
+                        <Loader2 className="w-5 h-5 animate-spin text-cyan-200" />
+                        <span className="text-cyan-200">Processando com Gemini...</span>
                       </>
                     ) : (
                       <>
-                        <FileCheck className="w-5 h-5" />
-                        Extrair Informações
+                        <AquaScanLensIcon className="w-5 h-5" />
+                        <span>Extrair Informações do Documento</span>
                       </>
                     )}
                   </button>
@@ -1139,44 +1145,58 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Result Column */}
-          <div className="bg-zinc-900/20 backdrop-blur-md border border-white/5 p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col shadow-inner min-h-[300px] lg:min-h-[500px] print:shadow-none print:border-none print:bg-transparent print:p-0">
+          <div className="glass-aqua-card p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col shadow-2xl min-h-[300px] lg:min-h-[500px] print:shadow-none print:border-none print:bg-transparent print:p-0">
+            <AquaWindowBar title="Painel de Auditoria & Resultado" icon={<AquaShieldIcon className="w-4 h-4 text-cyan-300" />} />
             <AnimatePresence mode="wait">
               {isProcessing ? (
                 <motion.div 
                   key="processing"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md z-20"
+                  initial={{ opacity: 0, y: 16, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/95 backdrop-blur-2xl z-20"
                 >
-                  {/* Processing Overlays */}
-                  <div className="relative w-20 h-20 flex items-center justify-center mb-6">
-                    <div className="absolute inset-0 rounded-full border-4 border-zinc-800" />
-                    <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
-                    <ScanLine className="w-8 h-8 text-emerald-400 animate-pulse" />
+                  {/* Subtle Ambient Scan Light */}
+                  <motion.div 
+                    className="absolute inset-x-0 h-32 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent pointer-events-none"
+                    animate={{ y: ["-100%", "200%"] }}
+                    transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                  />
+
+                  {/* Processing Indicator */}
+                  <div className="relative w-20 h-20 flex items-center justify-center mb-5">
+                    <div className="absolute inset-0 rounded-full border-2 border-white/20" />
+                    <motion.div 
+                      className="absolute inset-0 rounded-full border-2 border-cyan-400 border-t-transparent shadow-[0_0_15px_rgba(34,211,238,0.6)]"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    <AquaScanLensIcon className="w-8 h-8 animate-pulse text-cyan-300" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2">
-                    Analisando documento
+                  <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                    Analisando Recibo com Gemini IA
                   </h3>
-                  <p className="text-zinc-400 text-sm mt-2 font-medium">Extraindo CNPJ, valores e categorias com IA...</p>
+                  <p className="text-zinc-500 text-xs mt-1.5 font-mono">Executando extração estruturada de dados via Gemini...</p>
                 </motion.div>
               ) : result ? (
                 <motion.div 
                   key="result"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="flex flex-col h-full z-10 w-full"
                 >
-                  <div className="flex sm:items-center items-start justify-between mb-8 pb-5 border-b border-white/10 flex-col sm:flex-row gap-4">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <h2 className="text-xl font-semibold bg-gradient-to-r from-emerald-300 via-zinc-100 to-zinc-400 bg-clip-text text-transparent flex items-center gap-3 tracking-tight">
-                        Resultado da Extração
+                  <div className="flex sm:items-center items-start justify-between mb-6 pb-4 border-b border-zinc-800/80 flex-col sm:flex-row gap-4">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <h2 className="text-lg font-bold text-zinc-100 flex items-center gap-2 tracking-tight">
+                        Resultado da Auditoria
                       </h2>
                       {result.confidence_score !== undefined && (
-                        <div className="flex items-center gap-1.5 bg-zinc-950/40 px-2 py-1 rounded-md border border-white/5">
-                          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Índice de Precisão:</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${result.confidence_score >= 90 ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : result.confidence_score >= 70 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"}`}>
+                        <div className="flex items-center gap-1.5 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                          <span className="text-[10px] font-mono font-medium text-zinc-400">Precisão:</span>
+                          <span className={`text-[10px] font-mono font-bold ${result.confidence_score >= 90 ? "text-emerald-400" : result.confidence_score >= 70 ? "text-amber-400" : "text-rose-400"}`}>
                             {result.confidence_score}%
                           </span>
                         </div>
@@ -1187,45 +1207,45 @@ export default function Dashboard() {
                         onClick={() => {
                           if (isEditing && editedResult) {
                             setResult(editedResult);
-                            saveToHistory(editedResult); // Re-save updated result
+                            saveToHistory(editedResult);
                           } else {
                             setEditedResult(result);
                           }
                           setIsEditing(!isEditing);
                         }}
-                        className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${isEditing ? 'bg-emerald-500 text-zinc-950 font-bold hover:bg-emerald-400' : 'bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 text-zinc-300'}`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${isEditing ? 'bg-zinc-100 text-zinc-950 hover:bg-white' : 'bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300'}`}
                         title={isEditing ? "Salvar Edição" : "Editar Valores"}
                       >
-                        {isEditing ? <Save className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
-                        {isEditing && <span className="text-xs hidden sm:inline-block">Salvar</span>}
+                        {isEditing ? <Save className="w-3.5 h-3.5" /> : <Edit2 className="w-3.5 h-3.5" />}
+                        <span>{isEditing ? "Salvar" : "Editar"}</span>
                       </button>
                       
                       {!isEditing && (
                         <>
                           <button 
                             onClick={exportCSV}
-                            className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 text-emerald-400 transition-colors flex items-center gap-2"
+                            className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 text-xs font-semibold transition-all flex items-center gap-1.5"
                             title="Exportar CSV"
                             aria-label="Exportar CSV"
                           >
-                            <Download className="w-4 h-4" />
-                            <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline-block">Exportar</span>
+                            <Download className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Exportar</span>
                           </button>
                           <button 
                             onClick={shareSummary}
-                            className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 transition-colors hidden sm:flex items-center"
+                            className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-all hidden sm:flex items-center"
                             title="Compartilhar Resumo"
                             aria-label="Compartilhar Resumo"
                           >
-                            <Share2 className="w-4 h-4" />
+                            <Share2 className="w-3.5 h-3.5" />
                           </button>
                           <button 
                             onClick={handlePrint}
-                            className="p-2 rounded-lg bg-zinc-700/50 border border-zinc-600 hover:bg-zinc-600 text-zinc-300 transition-colors hidden sm:flex items-center"
+                            className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-all hidden sm:flex items-center"
                             title="Imprimir"
                             aria-label="Imprimir"
                           >
-                            <Printer className="w-4 h-4" />
+                            <Printer className="w-3.5 h-3.5" />
                           </button>
                         </>
                       )}
@@ -1238,11 +1258,11 @@ export default function Dashboard() {
                              resetForm();
                            }
                         }}
-                        className={`p-2 rounded-lg transition-colors ${isEditing ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-white/5 border border-white/5 hover:bg-white/10 text-zinc-400 hover:text-white'}`}
+                        className={`p-1.5 rounded-lg transition-all ${isEditing ? 'bg-rose-500/10 text-rose-400 hover:bg-rose-500/20' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'}`}
                         title={isEditing ? "Cancelar Edição" : "Nova análise"}
                         aria-label={isEditing ? "Cancelar Edição" : "Nova análise"}
                       >
-                        {isEditing ? <X className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
+                        {isEditing ? <X className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       </button>
                     </div>
                   </div>
@@ -1494,9 +1514,10 @@ export default function Dashboard() {
               ) : (
                 <motion.div 
                   key="idle"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                   className="flex flex-col items-center justify-center text-center px-6 h-full absolute inset-0 pb-10"
                 >
                   <div className="w-20 h-20 bg-white/[0.02] rounded-3xl flex items-center justify-center border border-white/5 mb-6 relative">

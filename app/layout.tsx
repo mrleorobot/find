@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'FinCategorizer',
-  description: 'Inteligência para as suas Notas Fiscais',
+  title: 'LedgerIQ',
+  description: 'AI-Powered Financial Audit & Document Extraction',
 }
 
 export default function RootLayout({
