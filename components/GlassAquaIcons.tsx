@@ -155,23 +155,20 @@ export function AquaGearIcon({ className = "w-4 h-4" }: { className?: string }) 
   );
 }
 
-/**
- * Mac OS X Aqua Window Chrome Header with Red/Yellow/Green Traffic Lights
- */
 export function AquaWindowBar({ title, icon, rightContent }: { title: string; icon?: React.ReactNode; rightContent?: React.ReactNode }) {
   return (
-    <div className="aqua-window-header px-4 py-2.5 flex items-center justify-between select-none -mx-6 -mt-6 sm:-mx-8 sm:-mt-8 mb-6 rounded-t-3xl border-b border-white/20">
+    <div className="bg-[#111] px-4 py-3 flex items-center justify-between select-none -mx-6 -mt-6 sm:-mx-8 sm:-mt-8 mb-6 rounded-t-3xl border-b border-[#222]">
       <div className="flex items-center gap-2">
-        <div className="w-3 h-3 rounded-full gel-traffic-red transition-transform hover:scale-110 cursor-pointer" title="Close Window" />
-        <div className="w-3 h-3 rounded-full gel-traffic-yellow transition-transform hover:scale-110 cursor-pointer" title="Minimize Window" />
-        <div className="w-3 h-3 rounded-full gel-traffic-green transition-transform hover:scale-110 cursor-pointer" title="Zoom Window" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#333] transition-colors hover:bg-[#555] cursor-pointer" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#333] transition-colors hover:bg-[#555] cursor-pointer" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#333] transition-colors hover:bg-[#555] cursor-pointer" />
       </div>
-      <div className="flex items-center gap-2 text-xs font-bold text-white tracking-wide font-sans drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+      <div className="flex items-center gap-2 text-xs font-bold text-white tracking-wide font-sans">
         {icon}
         <span>{title}</span>
       </div>
       <div className="flex items-center gap-2">
-        {rightContent || <span className="text-[10px] font-mono text-cyan-200/60 font-bold">LedgerIQ v3.5</span>}
+        {rightContent || <span className="text-[10px] font-mono text-[#666] font-bold">LedgerIQ PRO</span>}
       </div>
     </div>
   );

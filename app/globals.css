@@ -103,141 +103,60 @@
     background: rgba(255, 255, 255, 0.3);
   }
 
-  /* Apple 2000s Aqua / Y2K Glassmorphism Utilities */
-  .glass-aqua-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 100%);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.5), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  /* Dark Premium Utilities */
+  .premium-card {
+    background-color: #0c0c0c;
+    border: 1px solid #222222;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
   }
 
-  .glass-aqua-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 48%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.02) 100%);
-    pointer-events: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  .premium-glass-card {
+    background-color: rgba(18, 18, 18, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 
-  .aqua-pinstripes {
-    background-image: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.03),
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 3px
-    );
+  .premium-button-primary {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+    transition: all 0.2s ease-in-out;
+  }
+  .premium-button-primary:hover {
+    background-color: #e5e5e5;
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.25);
   }
 
-  .aqua-window-header {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 48%, rgba(0, 0, 0, 0.25) 50%, rgba(255, 255, 255, 0.05) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  .premium-button-secondary {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #333333;
+    transition: all 0.2s ease-in-out;
+  }
+  .premium-button-secondary:hover {
+    background-color: #1a1a1a;
+    border-color: #555555;
   }
 
-  /* Traffic Light Mac Aqua Gel Buttons */
-  .gel-traffic-red {
-    background: radial-gradient(circle at 35% 35%, #ff8a8a 0%, #ef4444 45%, #991b1b 90%);
-    border: 1px solid rgba(254, 202, 202, 0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  .premium-input {
+    background-color: #121212;
+    border: 1px solid #333333;
+    color: #ffffff;
+    transition: border-color 0.2s ease-in-out;
+  }
+  .premium-input:focus {
+    border-color: #ffffff;
+    outline: none;
   }
 
-  .gel-traffic-yellow {
-    background: radial-gradient(circle at 35% 35%, #fef08a 0%, #eab308 45%, #854d0e 90%);
-    border: 1px solid rgba(254, 240, 138, 0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  .gel-traffic-green {
-    background: radial-gradient(circle at 35% 35%, #86efac 0%, #22c55e 45%, #14532d 90%);
-    border: 1px solid rgba(187, 247, 208, 0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  .glass-aqua-pill {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0, 0, 0, 0.18) 51%, rgba(255, 255, 255, 0.08) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.38);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.7);
-  }
-
-  .glass-aqua-button-primary {
-    background: linear-gradient(180deg, rgba(96, 165, 250, 0.9) 0%, rgba(37, 99, 235, 0.95) 48%, rgba(29, 78, 216, 0.98) 50%, rgba(37, 99, 235, 1) 100%);
-    border: 1px solid rgba(191, 219, 254, 0.8);
-    box-shadow: 0 8px 25px rgba(29, 78, 216, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .glass-aqua-button-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.08) 100%);
-    pointer-events: none;
-    border-radius: 9999px 9999px 0 0;
-  }
-
-  .glass-aqua-button-emerald {
-    background: linear-gradient(180deg, rgba(52, 211, 153, 0.9) 0%, rgba(16, 185, 129, 0.95) 48%, rgba(5, 150, 105, 0.98) 50%, rgba(16, 185, 129, 1) 100%);
-    border: 1px solid rgba(167, 243, 208, 0.8);
-    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .glass-aqua-button-emerald::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.08) 100%);
-    pointer-events: none;
-    border-radius: 9999px 9999px 0 0;
-  }
-
-  .glass-aqua-button-secondary {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 48%, rgba(0, 0, 0, 0.22) 50%, rgba(255, 255, 255, 0.1) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .glass-aqua-button-secondary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.02) 100%);
-    pointer-events: none;
-  }
-
-  .glass-aqua-input {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-
-  .brushed-metal-surface {
-    background: linear-gradient(180deg, #2a2d34 0%, #1a1c22 100%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  .premium-pill {
+    background-color: #1a1a1a;
+    border: 1px solid #333333;
+    color: #a3a3a3;
   }
 }
