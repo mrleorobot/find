@@ -1,6 +1,6 @@
 {
-  "name": "ledger-iq",
-  "version": "0.1.0",
+  "name": "ledgeriq-auditoria-fiscal",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -30,5 +30,16 @@
   "overrides": {
     "react": "18.3.1",
     "react-dom": "18.3.1"
+  },
+  "description": "Auditoria fiscal automatizada com extração de notas fiscais via IA",
+  "author": "Leonilson Souza <leonilson@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrleorobot/find.git"
+  },
+  "homepage": "https://mrleorobot.github.io",
+  "bugs": {
+    "url": "https://github.com/mrleorobot/find/issues"
   }
 }
